@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: red;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ff0000;
+            padding: 10px;
+            color: white;
+            border-bottom: 4px solid black;
+        }
+        .search-box {
+            padding: 5px;
+            width: 300px;
+        }
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .video {
+            width: 300px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 2px solid black;
+        }
+        .video iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+            border-radius: 5px;
+        }
+        .full-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 1000;
+        }
+        .load-more {
+            text-align: center;
+            margin: 20px;
+        }
+        .load-more button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">YouTube Clone</div>
+        <input type="text" placeholder="खोजें..." class="search-box" id="searchInput">
+        <button class="search-btn" id="searchBtn">🔍</button>
+    </header>
+    
+    <main>
+        <div class="video-container" id="videoContainer"></div>
+        <div class="load-more">
+            <button id="loadMoreBtn">और वीडियो लोड करें</button>
+        </div>
+    </main>
+    
+    <script>
+        document.querySelector("#searchBtn").addEventListener("click", function() {
+            let query = document.querySelector("#searchInput").value;
+            if (query) {
+                window.location.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+            } else {
+                alert("कृपया खोज शब्द दर्ज करें!");
+            }
+        });
+
+        let videoIds = [
+            "tgbNymZ7vqY", "3JZ_D3ELwOQ", "dQw4w9WgXcQ", "LXb3EKWsInQ",
+            "kJQP7kiw5Fk", "fRh_vgS2dFE", "OPf0YbXqDm0", "CevxZvSJLk8",
+            "RgKAFK5djSk", "UceaB4D0jpo"
+        ];
+
+        let videoContainer = document.getElementById("videoContainer");
+        let loadMoreBtn = document.getElementById("loadMoreBtn");
+        let videosToShow = 10;
+
+        function loadVideos(count) {
+            for (let i = 0; i < count && videoIds.length > 0; i++) {
+                let id = videoIds.shift();
+                let videoDiv = document.createElement("div");
+                videoDiv.classList.add("video");
+                videoDiv.innerHTML = `
+                    <iframe id="video${i}" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
+                    <p>वीडियो</p>
+                    <button onclick="goFullScreen('video${i}')">फुल-स्क्रीन</button>
+                `;
+                videoContainer.appendChild(videoDiv);
+            }
+            if (videoIds.length === 0) {
+                loadMoreBtn.style.display = "none";
+            }
+        }
+
+        loadVideos(videosToShow);
+
+        loadMoreBtn.addEventListener("click", function() {
+            window.location.href = "https://www.youtube.com";
+        });
+
+        function goFullScreen(videoId) {
+            let iframe = document.getElementById(videoId);
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            } else {
+                alert("आपका ब्राउज़र फुल-स्क्रीन मोड का समर्थन नहीं करता!");
+            }
+        }
+    </script>
+</body>
+</html>
